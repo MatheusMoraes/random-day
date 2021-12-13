@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import { AxiosFilmURL, AxiosFoodURL } from './api';
-import {  Paper, Stack, styled } from '@mui/material';
+import {  Button, Paper, Stack, styled } from '@mui/material';
 import { places } from './random';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -22,7 +22,7 @@ interface Food {
   strMeal: string;
 }
 function App() {
-
+  let [refresh, setRefresh] = React.useState<boolean>(false);
   const [film, setFilm] = React.useState<Film>();
   const [food, setFood] = React.useState<Food[]>([]);
 
@@ -37,11 +37,15 @@ function App() {
       setFood(res.data.meals);
      }
     })
-  }, [])
+    setRefresh(false);
+  }, [refresh])
+
  const randomPlace = places[Math.floor(Math.random() * places.length)]
   return (
+
     <div className="App">
       <header className="App-header">
+      <>
         <img src="/logo.png" className="App-logo" alt="logo" />
         <Stack spacing={2}>
           <p className="text">Filme</p>
@@ -51,7 +55,11 @@ function App() {
           <p className="text">Comida</p>
           <Item className="text">{food[0]?.strMeal}</Item>
         </Stack>
-       
+       <br/>
+      <Button onClick={() => setRefresh(true)} variant="contained">
+        Embaralhar
+      </Button>
+      </>
       </header>
     </div>
   );
