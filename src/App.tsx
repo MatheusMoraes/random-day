@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import { AxiosFilmURL, AxiosFoodURL } from './api';
-import {  Button, Paper, Stack, styled } from '@mui/material';
-import { places } from './random';
+import {  Button, FormControl, FormControlLabel, FormLabel, Paper, Radio, RadioGroup, Stack, styled } from '@mui/material';
+import { activities, activitiesList } from './data';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -21,10 +21,14 @@ interface Food {
   id: string;
   strMeal: string;
 }
+
 function App() {
   let [refresh, setRefresh] = React.useState<boolean>(false);
   const [film, setFilm] = React.useState<Film>();
+  const [activity, setActivity] = React.useState<activities>();
   const [food, setFood] = React.useState<Food[]>([]);
+
+  const [IsHouseActivity, setIsHouseActivity] = React.useState(false);
 
   useEffect(() => {
     AxiosFilmURL.get<Film>('/').then((res) => {
@@ -37,23 +41,46 @@ function App() {
       setFood(res.data.meals);
      }
     })
-    setRefresh(false);
-  }, [refresh])
 
- const randomPlace = places[Math.floor(Math.random() * places.length)]
+    const filteredList = activitiesList.filter((inHouse) => inHouse.isHouseActivity === IsHouseActivity);
+   
+    setActivity(filteredList[Math.floor(Math.random() * filteredList.length)])
+    setRefresh(false);
+  }, [refresh, IsHouseActivity])
+  console.log(activity);
+
+
+
   return (
 
     <div className="App">
       <header className="App-header">
       <>
-        <img src="/logo.png" className="App-logo" alt="logo" />
+      <br/>
+      <img src="/logo.png" className="App-logo" alt="logo" />
+      <br/>
+      <FormControl component="fieldset">
+          <FormLabel component="legend" style={{color: 'white'}}>Ambiente</FormLabel>
+          <RadioGroup
+            row 
+            aria-label="Ambiente"
+            defaultValue="Rua"
+            name="radio-buttons-group"
+          >
+            <FormControlLabel checked={!IsHouseActivity? true: false} onClick={() => {setIsHouseActivity(false)}} control={<Radio  defaultChecked/>} label="Rua" />
+            <FormControlLabel checked={IsHouseActivity? true: false} onClick={() => setIsHouseActivity(true)}  control={<Radio />} label="Casa" />
+      
+          </RadioGroup>
+        </FormControl>
+
         <Stack spacing={2}>
           <p className="text">Filme</p>
           <Item className="text" key={film?.id}>{film?.name}</Item>
-          <p className="text">Rolê</p>
-          <Item className="text">{randomPlace.name}</Item>
           <p className="text">Comida</p>
           <Item className="text">{food[0]?.strMeal}</Item>
+          <p className="text">Atividade</p>
+          <Item className="text">{activity?.name}</Item>
+          <Item className="text">{activity?.description}</Item>
         </Stack>
        <br/>
       <Button onClick={() => setRefresh(true)} variant="contained">

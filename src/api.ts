@@ -8,10 +8,15 @@ export const AxiosFilmURL = axios.create({
 
 })
 
-export const AxiosPlaceURL = axios.create({
-  baseURL: "https://randommer.io/api/random-movies"
-})
-
 export const AxiosFoodURL = axios.create({
   baseURL: "https://www.themealdb.com/api/json/v1/1/random.php"
+})
+
+export const AxiosLocal = axios.create({
+  baseURL: "https://localhost:44397/api/Activities/random",
+  headers: { 
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods':' GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+  }
 })
